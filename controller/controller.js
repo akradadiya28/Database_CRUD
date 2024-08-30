@@ -2,16 +2,14 @@ const todoModal = require('../models/todoModal');
 
 let todoStorage = [];
 
-const defaultController = (req, res) => {
-    res.render('index.ejs', { todos: todoStorage });
+const defaultController = async (req, res) => {
+
+    const todos = await todoModal.find({});
+
+    res.render('index.ejs', { todos: todos });
 }
 
 const todoApp = async (req, res) => {
-    // let todoObj = {
-    //     id: todoStorage.length + 1,
-    //     task: req.body.task
-    // }
-    // todoStorage = [...todoStorage, todoObj];
 
     const todoObj = new todoModal({
         task: req.body.task,
@@ -25,18 +23,13 @@ const todoApp = async (req, res) => {
     res.redirect('/')
 }
 
-const editTodo = (req, res) => {
+const editTodo = async (req, res) => {
 
     let { id } = req.params;
 
-    let singleRec = todoStorage.find((rec) => {
-        return rec.id == id;
-    })
+    const editTodo = await todoModal.findOne({ _id: id });
 
-    // console.log("Single Record", singleRec);
-
-    // res.send("Hello");
-    res.render('editTodo.ejs', { todos: singleRec });
+    res.render('editTodo.ejs', { todos: editTodo });
 }
 
 const updateTodo = (req, res) => {
